@@ -33,7 +33,7 @@ const validConfigKeys = {
   callback: true,
   v: true
 }
-let userDataUrl, userPosterUrl, userConfigObj;
+let userDataUrl, userPosterUrl, userConfigObj = {};
 
 const buildSpecificMovieUrl = paramObj => {
   return specificMovieParamKeys.reduce((acc, key) => {
@@ -69,8 +69,8 @@ const functions = {
     userConfigObj = Object.assign(defaultConfigObj, configObj);
   },
   getSpecificMovie(paramObj) {
-    if(!paramObj.imdbId && !paramObj.title) { 
-      return throw new Error('No imdbId or title specified');
+    if(!paramObj.i && !paramObj.t) { 
+      throw new Error('No imdbId or title specified');
     }
 
     const requestTerms = buildSpecificMovieUrl(paramObj);
@@ -80,15 +80,15 @@ const functions = {
       .then(results => results.data);
   },
   searchForMovie(paramObj){
-    if(!paramObj.title) {
-      return throw new Error('No title specified');
+    if(!paramObj.t) {
+      throw new Error('No title specified');
     }
 
     const requestTerms = buildSearchUrl(paramObj);
-    const requestUrl = `${userDataUrl}${requestTerms}`;
+    const searchUrl = `${userDataUrl}${requestTerms}`;
     
     return axios.post(searchUrl)
-      .then((results) => result.data);
+      .then((results) => results.data);
   },
 }
 
@@ -96,8 +96,8 @@ module.exports = apiKey => {
   if (typeof apiKey !== 'string') {
     throw new Error('Invalid OMDB API Key. Should be a string.');
   }
-  config.apiKey = apikey;
-  userDataUrl = dataUrl.replace('USERAPIKEY', keyString);
-  userPosterUrl = posterUrl.replace('USERAPIKEY', keyString);
+  config.apiKey = apiKey;
+  userDataUrl = dataUrl.replace('USERAPIKEY', apiKey);
+  userPosterUrl = posterUrl.replace('USERAPIKEY', apiKey);
   return functions;
 };
