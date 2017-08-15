@@ -2,8 +2,6 @@ const config = { apiKey: null };
 const axios = require('axios');
 const dataUrl = `http://www.omdbapi.com/?apikey=USERAPIKEY`;
 const posterUrl = `http://img.omdbapi.com/?apikey=USERAPIKEY`;
-const noIdOrTitleObj = { title: 'Please specify an imdbId or title' };
-
 const defaultSearchParams = {
   i: null,
   t: null,
@@ -23,8 +21,8 @@ const defaultSpecificMovieParams = {
   callback: null,
   v: null
 };
-const searchParamKeys = ['i', 't', 'type', 'y', 'plot', 'r', 'callback', 'v'];
-const specificMovieParamKeys = ['t', 'type', 'y', 'r', 'page', 'callback', 'v'];
+const searchParamKeys = ['s', 'type', 'y', 'plot', 'r', 'callback', 'v'];
+const specificMovieParamKeys = ['t', 'i', 'type', 'y', 'r', 'page', 'callback', 'v'];
 const validConfigKeys = {
   type: true,
   plot: true,
@@ -70,7 +68,7 @@ const functions = {
   },
   getSpecificMovie(paramObj) {
     if(!paramObj.i && !paramObj.t) { 
-      throw new Error('No imdbId or title specified');
+      throw new Error('No imdbId or title specified, object keys "i" or "t"');
     }
 
     const requestTerms = buildSpecificMovieUrl(paramObj);
@@ -80,13 +78,13 @@ const functions = {
       .then(results => results.data);
   },
   searchForMovie(paramObj){
-    if(!paramObj.t) {
-      throw new Error('No title specified');
+    if(!paramObj.s) {
+      throw new Error('No search specified with object key "s"');
     }
 
     const requestTerms = buildSearchUrl(paramObj);
     const searchUrl = `${userDataUrl}${requestTerms}`;
-    
+    console.log(searchUrl);
     return axios.post(searchUrl)
       .then((results) => results.data);
   },
