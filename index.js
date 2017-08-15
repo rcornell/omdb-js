@@ -57,6 +57,7 @@ const functions = {
     return axios.post(searchUrl)
       .then((results) => results.data);
   },
+  
 }
 
 module.exports = apiKey => {
