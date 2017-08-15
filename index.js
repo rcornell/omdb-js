@@ -1,4 +1,3 @@
-const config = { apiKey: null };
 const axios = require('axios');
 const dataUrl = `http://www.omdbapi.com/?apikey=USERAPIKEY`;
 const posterUrl = `http://img.omdbapi.com/?apikey=USERAPIKEY`;
@@ -35,7 +34,6 @@ const functions = {
       }
     });
     userConfigObj = Object.assign(userConfigObj, configObj);
-    console.log('User config obj: ', userConfigObj);
   },
   getSpecificMovie(title, imdbId, paramObj = {}) {
     if(!title && !imdbId) { 
@@ -46,7 +44,6 @@ const functions = {
 
     const requestTerms = buildSearchTerms(paramObj);
     const requestUrl = `${userDataUrl}${requestTerms}`;
-    console.log(requestUrl);
     return axios.post(requestUrl)
       .then(results => results.data);
   },
@@ -57,7 +54,6 @@ const functions = {
     paramObj.s = title;
     const requestTerms = buildSearchTerms(paramObj);
     const searchUrl = `${userDataUrl}${requestTerms}`;
-    console.log(searchUrl);
     return axios.post(searchUrl)
       .then((results) => results.data);
   },
@@ -67,7 +63,6 @@ module.exports = apiKey => {
   if (typeof apiKey !== 'string') {
     throw new Error('Invalid OMDB API key. Should be a string.');
   }
-  config.apiKey = apiKey;
   userDataUrl = dataUrl.replace('USERAPIKEY', apiKey);
   userPosterUrl = posterUrl.replace('USERAPIKEY', apiKey);
   return functions;
