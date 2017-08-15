@@ -2,27 +2,8 @@ const config = { apiKey: null };
 const axios = require('axios');
 const dataUrl = `http://www.omdbapi.com/?apikey=USERAPIKEY`;
 const posterUrl = `http://img.omdbapi.com/?apikey=USERAPIKEY`;
-const defaultSearchParams = {
-  i: null,
-  t: null,
-  type: null,
-  y: null,
-  plot: null,
-  r: null,
-  callback: null,
-  v: null
-};
-const defaultSpecificMovieParams = {
-  t: '',
-  type: null,
-  y: null,
-  r: null,
-  page: null,
-  callback: null,
-  v: null
-};
-const searchParamKeys = ['s', 'type', 'y', 'plot', 'r', 'callback', 'v'];
-const specificMovieParamKeys = ['t', 'i', 'type', 'y', 'r', 'page', 'callback', 'v'];
+const searchParamKeys = ['s', 'type', 'y', 'r', 'page', 'callback', 'v'];
+const specificMovieParamKeys = ['t', 'i', 'plot', 'type', 'y', 'r', 'page', 'callback', 'v'];
 const validConfigKeys = {
   type: true,
   plot: true,
@@ -33,25 +14,14 @@ const validConfigKeys = {
 }
 let userDataUrl, userPosterUrl, userConfigObj = {};
 
-const buildSpecificMovieUrl = paramObj => {
-  return specificMovieParamKeys.reduce((acc, key) => {
+const buildSearchTerms = paramObj => {
+  const validationArray = paramObj.s ? searchParamKeys : specificMovieParamKeys;
+  return validationArray.reduce((acc, key) => {
     if(paramObj[key]) {
       return `${acc}&${key}=${paramObj[key]}`; 
     }
     if(userConfigObj[key]) {
-      return `${acc}&${key}=${paramObj[key]}`; 
-    }
-    return acc;
-  }, '');
-}
-
-const buildSearchUrl = paramObj => {
-  return searchParamKeys.reduce((acc, key) => {
-    if(paramObj[key]) {
-      return `${acc}&${key}=${paramObj[key]}`; 
-    }
-    if(userConfigObj[key]) {
-      return `${acc}&${key}=${paramObj[key]}`; 
+      return `${acc}&${key}=${userConfigObj[key]}`; 
     }
     return acc;
   }, '');
@@ -61,28 +31,31 @@ const functions = {
   configure(configObj = {}) {
     Object.keys(configObj).forEach(key => {
       if(!validConfigKeys[key]) {
-        throw new Error('Invalid OMDB config key')
+        throw new Error(`Invalid OMDB config key: ${key}`)
       }
-    })
-    userConfigObj = Object.assign(defaultConfigObj, configObj);
+    });
+    userConfigObj = Object.assign(userConfigObj, configObj);
+    console.log('User config obj: ', userConfigObj);
   },
-  getSpecificMovie(paramObj) {
-    if(!paramObj.i && !paramObj.t) { 
-      throw new Error('No imdbId or title specified, object keys "i" or "t"');
+  getSpecificMovie(title, imdbId, paramObj = {}) {
+    if(!title && !imdbId) { 
+      throw new Error('No imdbId or title specified');
     }
+    if (title) paramObj.t = title;
+    if (imdbId) paramObj.i = imdbId; // Note that OMDB will prioritize title over id
 
-    const requestTerms = buildSpecificMovieUrl(paramObj);
+    const requestTerms = buildSearchTerms(paramObj);
     const requestUrl = `${userDataUrl}${requestTerms}`;
-
+    console.log(requestUrl);
     return axios.post(requestUrl)
       .then(results => results.data);
   },
-  searchForMovie(paramObj){
-    if(!paramObj.s) {
-      throw new Error('No search specified with object key "s"');
+  searchForMovie(title, paramObj = {}){
+    if(!title) {
+      throw new Error('No title to search');
     }
-
-    const requestTerms = buildSearchUrl(paramObj);
+    paramObj.s = title;
+    const requestTerms = buildSearchTerms(paramObj);
     const searchUrl = `${userDataUrl}${requestTerms}`;
     console.log(searchUrl);
     return axios.post(searchUrl)
@@ -92,7 +65,7 @@ const functions = {
 
 module.exports = apiKey => {
   if (typeof apiKey !== 'string') {
-    throw new Error('Invalid OMDB API Key. Should be a string.');
+    throw new Error('Invalid OMDB API key. Should be a string.');
   }
   config.apiKey = apiKey;
   userDataUrl = dataUrl.replace('USERAPIKEY', apiKey);
