@@ -1,0 +1,22 @@
+{
+  "name": "omdb-js",
+  "version": "1.0.0",
+  "description": "A wrapper for OMDB API in JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rcornell/omdb-js.git"
+  },
+  "author": "Rob Cornell <rob.cornell@gmaio.com> (http://www.robcornell.io)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rcornell/omdb-js/issues"
+  },
+  "homepage": "https://github.com/rcornell/omdb-js#readme",
+  "dependencies": {
+    "axios": "^0.16.2"
+  }
+}
