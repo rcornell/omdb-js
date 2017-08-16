@@ -4,16 +4,16 @@
 
 # Table of Contents
 
-1. [Features](#why)
+1. [Why](#why)
 1. [Features](#team)
-1. [Installing](#Installing)
+1. [Installing](#installing)
 1. [Configuration](#configuration)
 1. [Usage](#usage)
 1. [Contributing](#contributing)
 
 # Why
 
-  I used OMDB API for a recent [project](https://github.com/binary100/fliq) and found it to be a handy little API. There were no wrappers for it, so I made one! 
+  I used OMDB API for a recent [application](https://github.com/binary100/fliq) and found it to be a handy little API. There were no wrappers for it, so I made one! 
 
 # Features
 
@@ -21,24 +21,24 @@
 
 - [*getSpecificMovie*](#getspecificmovie-info): Ask OMDB API for a single movie result. If you pass a title into the method (instead of an imdbId), the returned movie will be the movie with the closest matching title. 
 
-- [*configure*](#configure-info): Configure omdb-js to run with specified settings at each call. More details on these parameters can be found here: http://www.omdbapi.com/
+- [*configure*](#configure-info): Configure omdb-js to run with specified settings at each call. More details on these parameters can be found here: http://www.omdbapi.com/.
 
 # Installing
 
-In terminal, within your project's directory tree, type:
+In terminal, within your project's directory tree run the following command:
 
 ```npm install --save omdb-js```
 
+
 # Configuration
 
-To use omdb-js, you will need to pass your OMDB API key string into it when it is require'd into your project.
+To use omdb-js, you will need to pass your OMDB API key (string) into it when it is require'd into your project.
 
 
 ```
 const omdb = require('omdb-js')(OMDB_API_KEY);
 ```
 
-Contact us if you have any questions!
 
 # API
 
@@ -61,9 +61,13 @@ Utilize OMDB API's native fuzzy searches to find a number of movies whose titles
       - y: (string)
         - info: The year of the item you are searching for
       - r: (string) The response type
-      - page: (number 1-100) The page number of search results you want
+        - valid options: 'json', 'xml'
+        - default: 'json'
+      - page: (number 1-100)
+        - info: the page number of search results you want
+        - default: 1
       - callback: (string)
-        -info: A jsonp callback function name
+        - info: A jsonp callback function name
 ### Example:
 
 ```
@@ -103,9 +107,11 @@ Find the closest matching movie for the title passed to the method. This will re
       - y: (string)
         - info: The year of the item you are searching for
       - r: (string) The response type
-      - page: (number 1-100) The page number of search results you want
+      - page: (number 1-100)
+        - info: the page number of search results you want
+        - default: 1
       - callback: (string)
-        -info: A jsonp callback function name
+        - info: A jsonp callback function name
 ### Example
 
 ```
@@ -151,7 +157,11 @@ omdb.configure({
   type: 'episode'
 });
 
-// Future omdb function invocations will return xml, page 2, and search for episodes from IMDB rather than movies. In searches that return full movie objects, e.g. getSpecificMovie, the plot descriptions will be short.
+Future omdb function invocations will return xml,
+page 2, and search for episodes from IMDB rather than movies. 
+
+In searches that return full movie objects, e.g. getSpecificMovie,
+the plot descriptions will be short.
 
 ```
 
@@ -161,7 +171,7 @@ omdb.configure({
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the code of conduct, and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on the code of conduct and the process for submitting pull requests.
 
 [Contributors](https://github.com/rcornell/omdb-js/contributors) are welcome and will be clearly acknowledged.
 
